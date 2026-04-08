@@ -1,40 +1,17 @@
-//
-//  CoreAudioInterruptionBugApp.swift
-//  CoreAudioInterruptionBug
-//
-//  Created by Stuart Charlton on 2026-04-08.
-//
-
 import SwiftUI
 
 @main
 struct CoreAudioInterruptionBugApp: App {
-    
-    @State private var appModel = AppModel()
-    @State private var avPlayerViewModel = AVPlayerViewModel()
-    
+    @State private var immersionStyle: ImmersionStyle = .mixed
+
     var body: some Scene {
         WindowGroup {
-            if avPlayerViewModel.isPlaying {
-                AVPlayerView(viewModel: avPlayerViewModel)
-            } else {
-                ContentView()
-                    .environment(appModel)
-            }
+            ContentView()
         }
-        
-        ImmersiveSpace(id: appModel.immersiveSpaceID) {
+
+        ImmersiveSpace(id: "ImmersiveSpace") {
             ImmersiveView()
-                .environment(appModel)
-                .onAppear {
-                    appModel.immersiveSpaceState = .open
-                    avPlayerViewModel.play()
-                }
-                .onDisappear {
-                    appModel.immersiveSpaceState = .closed
-                    avPlayerViewModel.reset()
-                }
         }
-        .immersionStyle(selection: .constant(.full), in: .full)
+        .immersionStyle(selection: $immersionStyle, in: .mixed)
     }
 }
